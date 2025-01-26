@@ -21,7 +21,7 @@ bot.command("start", async (ctx) => {
         .text("FAQ", "help");
 
     await ctx.reply("Выберите действие", {reply_markup: inlinekeyboard});
-    // const InlineKeyboard2 = new InlineKeyboard2().text("Создать").text("Удалить").row().text("Изменить").text("Назад");
+
 });
 
 // bot.on("message", async (ctx) => {
@@ -107,6 +107,7 @@ bot.callbackQuery("create", async (ctx) => {
 });
 
 console.log("Бот запущен");
+
 bot.start();
 
 // ЧЕТО ТЁМИНО
