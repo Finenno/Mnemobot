@@ -2,9 +2,9 @@ const { Menu } = require("@grammyjs/menu");
 
 const main = new Menu("main-menu")
 .submenu("Мои модули", "modules-menu")
-.text("Профиль", (ctx) => ctx.reply("А здесь будет вся твоя ЛИЧНАЯ статистика..."))
+.text("Профиль", (ctx) => ctx.answerCallbackQuery({text: "А здесь будет вся твоя ЛИЧНАЯ статистика..."}))
 .row()
-.text("Топ модулей", (ctx) => ctx.reply("Здесь будет топ всех пользовательских модулей..."))
+.text("Топ модулей", (ctx) => ctx.answerCallbackQuery({text: "Здесь будет топ всех пользовательских модулей..."}))
 .submenu("FAQ", "help-menu");
 
 const modules = new Menu("modules-menu")
@@ -28,7 +28,7 @@ const new_theme = new Menu("new_theme-menu")
 
 main.register(modules);
 main.register(help);
-main.register(new_theme);
+modules.register(new_theme);
 
 module.exports = {
     main,

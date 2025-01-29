@@ -26,7 +26,7 @@ async function addUser(user_id, username, language_code, is_premium, date) { // 
     RETURNING *;
   `; 
 
-  const values = [user_id, username, language_code, is_premium, date.getTime() / 1000]; 
+  const values = [user_id, username, language_code, is_premium, date]; 
 
   try {
     const res = await pool.query(text, values); // создаем подключение и выполняем запрос
