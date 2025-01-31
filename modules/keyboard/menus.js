@@ -34,6 +34,11 @@ module.exports = {
     main,
     modules,
     help,
+<<<<<<< Updated upstream
     new_theme
 };
 
+=======
+    newQuiz
+};
+>>>>>>> Stashed changes

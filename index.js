@@ -12,6 +12,7 @@ const sendMessagesToAdmins = false;
 
 bot.use(main);
 
+
 bot.command("start", async (ctx) => {
     try{
         await addUser(
