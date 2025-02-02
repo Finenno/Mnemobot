@@ -7,7 +7,7 @@ function getServerStats() {
         const totalMemory = os.totalmem();
         const freeMemory = os.freemem();
         const usedMemory = ((totalMemory - freeMemory) / 1024 / 1024).toFixed(2);
-        const uptime = (os.uptime() / 3600).toFixed(2);;
+        const uptime = (os.uptime() / 3600).toFixed(2);
 
         let text = `
         Memory: ${usedMemory} MB / ${(totalMemory / 1024 / 1024).toFixed(2)} MB 

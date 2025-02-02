@@ -1,40 +1,52 @@
 const { Menu } = require("@grammyjs/menu");
+const { hello } = require("./conversations");
 
 const main = new Menu("main-menu")
-.submenu("Мои модули", "modules-menu")
-.text("Профиль", (ctx) => ctx.answerCallbackQuery({text: "А здесь будет вся твоя ЛИЧНАЯ статистика..."}))
-.row()
-.text("Топ модулей", (ctx) => ctx.answerCallbackQuery({text: "Здесь будет топ всех пользовательских модулей..."}))
-.submenu("FAQ", "help-menu");
+  .submenu("Мои квизы", "quiz-menu")
+  .text("Профиль", (ctx) => ctx.answerCallbackQuery({ text: "А здесь будет вся твоя ЛИЧНАЯ статистика..." }))
+  .row()
+  .text("Топ квизов", (ctx) => ctx.answerCallbackQuery({ text: "Здесь будет топ всех пользовательских модулей..." }))
+  .submenu("FAQ", "help-menu");
 
-const modules = new Menu("modules-menu")
-.submenu("Создать", "new_theme-menu") // Добавить пользовательский ввод темы и сохранение её в бд
-.text("Удалить")
-.row()
-.text("Редактировать")
-.back("Назад");
+const quiz = new Menu("quiz-menu")
+  .submenu("Создать", "newQuiz-menu")
+  .text("Удалить")
+  .row()
+  .text("Редактировать")
+  .back("Назад");
 
 const help = new Menu("help-menu")
-.url("Часто задаваемые вопросы", "https://google.com")
-.row()
-.text("Чат с техподдержкой", async (ctx) => ctx.reply("Контакт для чата с технической поддержкой @fineno"))
-.back("Назад");
+  .text("Часто задаваемые вопросы")
+  .text("Чат с техподдержкой", async (ctx) => ctx.reply("Контакт для чата с технической поддержкой @fineno"))
+  .back("Назад");
 
-const new_theme = new Menu("new_theme-menu")
-.text("Добавить")
-.text("Удалить")
-.row()
-.text("Изменить")
-.back("Назад");
+const main2 = new Menu("createQuiz") // Уникальный ID
+  .text("Добавить вопрос")
+  .text("Редактировать описание")
+  .row()
+  .text("Изменить название");
 
-main.register(modules);
+const newquiz = new Menu("newQuiz-menu")
+  .text("Ввести тему", async (ctx) => {
+    await ctx.conversation.enter("hello");
+    
+  })
+  .text("Удалить")
+  .row()
+  .text("Изменить")
+  .back("Назад", async (ctx) => {
+    await ctx.editMessageText("Выберите действие");
+  });
+
+// Регистрируем все меню
+main.register(quiz);
 main.register(help);
-modules.register(new_theme);
-
+quiz.register(newquiz);
+main.register(main2);
 module.exports = {
-    main,
-    modules,
-    help,
-    new_theme
+  main,
+  quiz,
+  help,
+  newquiz,
+  main2,
 };
-
