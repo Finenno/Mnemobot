@@ -18,10 +18,10 @@
   },
   "homepage": "https://github.com/Finenno/Mnemobot#readme",
   "dependencies": {
-    "@grammyjs/conversations": "^1.2.0",
+    "@grammyjs/conversations": "^2.0.1",
     "@grammyjs/menu": "^1.3.0",
     "dotenv": "^16.4.7",
-    "grammy": "^1.34.0",
+    "grammy": "^1.34.1",
     "nodemon": "^3.1.9",
     "pg": "^8.13.1",
     "systeminformation": "^5.25.11"

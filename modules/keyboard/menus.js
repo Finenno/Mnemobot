@@ -15,7 +15,8 @@ const modules = new Menu("modules-menu")
 .back("Назад");
 
 const help = new Menu("help-menu")
-.text("Часто задаваемые вопросы")
+.url("Часто задаваемые вопросы", "https://google.com")
+.row()
 .text("Чат с техподдержкой", async (ctx) => ctx.reply("Контакт для чата с технической поддержкой @fineno"))
 .back("Назад");
 
