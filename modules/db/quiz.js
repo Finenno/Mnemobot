@@ -120,5 +120,6 @@ module.exports = {
   updateQuizTitle,
   createQuizWithTitle,
   setQuizDescription,
-  addQuizQuestion
+  addQuizQuestion,
+  getQuiz,
 };

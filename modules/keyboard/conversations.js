@@ -1,29 +1,34 @@
-const { updateQuizTitle, createQuizWithTitle, setQuizDescription, addQuizQuestion } = require('../db/quiz');
-
+const { getQuiz, updateQuizTitle, createQuizWithTitle, setQuizDescription, addQuizQuestion } = require('../db/quiz');
 
 async function hello(conversation, ctx) {
-
-  quiz = conversation.menu('quiz-menu')
-  .text('Добавить вопрос')
-  .text('Редактировать описание')
-  .row()
-  .text('Изменить название');
-
-  await ctx.reply('Введите название квиза\n(используйте /quit чтобы выйти)');
+  let msg = await ctx.reply('Введите название квиза\n(используйте /quit чтобы выйти)');
   const { message } = await conversation.waitFor('message:text');
+
   if (message.text == "/quit") {
-    await ctx.menu("quiz-menu", { immediate: true });
     await conversation.halt();
-
   };
-  // const quizId = await conversation.external(() => createQuizWithTitle(ctx.from.id, message.text)); // GOLD RULE -_-
-  await ctx.reply (`
-ID вашего квиза: #001
-Название квиза: ${message.text}
-    `, {
-    reply_markup: mainMenu,
-  });
-}
+  
+  const quizId = await conversation.external(() => createQuizWithTitle(ctx.from.id, message.text)); 
 
-// Экспорт функции
+  let quizData = await conversation.external(() => getQuiz(quizId));
+
+
+  const quizMenu = conversation.menu("quizMenu", { autoAnswer: false })
+  .text(() => quizData.description ? "Изменить описание" : "Установить описание", async (ctx) => {
+    await ctx.reply("Введите описание:")
+    let { descMessage } = await conversation.waitFor("message:text");
+    await conversation.external(() => setQuizDescription(quizId, descMessage.text));
+  });
+
+  
+
+  await ctx.reply (`
+ID вашего квиза: ${quizId}
+Название квиза: ${quizData.title}
+Описание квиза: ${quizData.description ? quizData.description : ' - '}
+    `, {
+    reply_markup: quizMenu,
+      });
+};
+
 module.exports = { hello };
