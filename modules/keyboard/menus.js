@@ -1,5 +1,6 @@
 const { Menu } = require("@grammyjs/menu");
 
+
 const main = new Menu("main-menu")
   .submenu("Мои квизы", "quiz-menu")
   .text("Профиль", (ctx) => ctx.answerCallbackQuery({ text: "А здесь будет вся твоя ЛИЧНАЯ статистика..." }))

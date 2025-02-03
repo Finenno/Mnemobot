@@ -14,7 +14,6 @@ bot.use(conversations());
 bot.use(createConversation(hello));
 bot.use(main);
 
-
  bot.command("start", async (ctx) => {
      await ctx.reply("Выберите действие", {reply_markup: main});
  });
