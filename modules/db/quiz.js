@@ -50,6 +50,20 @@ CREATE TABLE quiz_questions (
 
 const pool = require('../../db');
 
+
+async function getQuiz(quizId){
+    try {
+        const result = await pool.query(
+            'SELECT * FROM quizzes WHERE quiz_id = $1',
+            [quizId]
+        );
+        return result.rows[0];
+    } catch (err) {
+        return err
+    };
+};
+
+
 async function createQuizWithTitle(user_id, quizTitle){
     try {
         // Создаем квиз в main-таблице quizzes, статус "черновик"
@@ -102,11 +116,10 @@ async function addQuizQuestion(quizId, questionName, correctAnswer, incorrectAns
 
 
 
-
-
 module.exports = {
   updateQuizTitle,
   createQuizWithTitle,
   setQuizDescription,
-  addQuizQuestion
+  addQuizQuestion,
+  getQuiz,
 };

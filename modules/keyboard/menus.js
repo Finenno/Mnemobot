@@ -1,5 +1,5 @@
+const { conversations } = require("@grammyjs/conversations");
 const { Menu } = require("@grammyjs/menu");
-
 
 const main = new Menu("main-menu")
   .submenu("Мои квизы", "quiz-menu")
@@ -9,7 +9,7 @@ const main = new Menu("main-menu")
   .submenu("FAQ", "help-menu");
 
 const quiz = new Menu("quiz-menu")
-  .submenu("Создать", "newQuiz-menu")
+  .text("Создать", async (ctx) => { await ctx.conversation.enter("hello"); } )
   .text("Удалить")
   .row()
   .text("Редактировать")
@@ -21,27 +21,21 @@ const help = new Menu("help-menu")
   .back("Назад");
 
 
-const newquiz = new Menu("newQuiz-menu")
-  .text("Ввести тему", async (ctx) => {
-    await ctx.conversation.enter("hello");
-    
-  })
-  .text("Удалить")
-  .row()
-  .text("Изменить")
-  .back("Назад", async (ctx) => {
-    await ctx.editMessageText("Выберите действие");
-  });
+// const newquiz = new Menu("newQuiz-menu")
+//   .text("Ввести название", async (ctx) => {
+//     await ctx.conversation.enter("hello");
+//   })
+//   .back("Назад", async (ctx) => {
+//     await ctx.editMessageText("Выберите действие");
+//   });
 
 // Регистрируем все меню
-main.register(quiz);
+main.register(quiz); 
 main.register(help);
-quiz.register(newquiz);
-
-
+//quiz.register(newquiz);
 module.exports = {
   main,
   quiz,
   help,
-  newquiz,
+  // newquiz,
 };
