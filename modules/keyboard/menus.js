@@ -1,5 +1,4 @@
 const { Menu } = require("@grammyjs/menu");
-const { hello } = require("./conversations");
 
 const main = new Menu("main-menu")
   .submenu("Мои квизы", "quiz-menu")
@@ -20,11 +19,6 @@ const help = new Menu("help-menu")
   .text("Чат с техподдержкой", async (ctx) => ctx.reply("Контакт для чата с технической поддержкой @fineno"))
   .back("Назад");
 
-const main2 = new Menu("createQuiz") // Уникальный ID
-  .text("Добавить вопрос")
-  .text("Редактировать описание")
-  .row()
-  .text("Изменить название");
 
 const newquiz = new Menu("newQuiz-menu")
   .text("Ввести тему", async (ctx) => {
@@ -42,11 +36,11 @@ const newquiz = new Menu("newQuiz-menu")
 main.register(quiz);
 main.register(help);
 quiz.register(newquiz);
-main.register(main2);
+
+
 module.exports = {
   main,
   quiz,
   help,
   newquiz,
-  main2,
 };

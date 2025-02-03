@@ -50,9 +50,6 @@ CREATE TABLE quiz_questions (
 
 const pool = require('../../db');
 
-
-    
-
 async function createQuizWithTitle(user_id, quizTitle){
     try {
         // Создаем квиз в main-таблице quizzes, статус "черновик"
