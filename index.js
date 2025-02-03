@@ -15,9 +15,6 @@ bot.use(createConversation(hello));
 bot.use(main);
 bot.use(quiz);
 
-// bot.command("test", async (ctx) => {
-//   await ctx.conversation.enter("hello");
-// })
  bot.command("start", async (ctx) => {
      await ctx.reply("Выберите действие", {reply_markup: main});
  });
