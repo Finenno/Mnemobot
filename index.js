@@ -1,35 +1,53 @@
 require("dotenv").config();
-const { Bot } = require("grammy");
-const { main, quiz } = require("././modules/keyboard/menus");
-const { Menu } = require("@grammyjs/menu");
+const { Bot, session } = require("grammy");
+const { main, createdQuiz } = require("././modules/keyboard/menus");
 const { conversations, createConversation } = require("@grammyjs/conversations");
 const { hydrate } = require("@grammyjs/hydrate");
-const { hello } = require("././modules/keyboard/conversations"); // Импортируем hello
-
+const { createNewQuiz, setQuizDesc } = require("././modules/keyboard/conversations");
 const bot = new Bot(process.env.BOT_API_KEY); 
 
-bot.use(conversations({
-  plugins: [hydrate()]
-}));
-bot.use(createConversation(hello));
-bot.use(main);
-bot.use(quiz);
+/*
+function crateInitialSessionData() {
+  return {
+    currentQuizId: undefined,
+  }
+}
+*/
 
-// bot.command("test", async (ctx) => {
-//   await ctx.conversation.enter("hello");
-// })
+
+bot.use(session({ initial: () => ({ currentQuizId: undefined }) }));
+
+
+bot.use(conversations({
+  plugins: [hydrate(), createdQuiz]
+}));
+
+
+
+bot.use(createConversation(createNewQuiz, "createNewQuiz"));
+bot.use(createConversation(setQuizDesc, "setQuizDesc"));
+
+
+
+bot.use(createdQuiz);
+bot.use(main);
+
+
+
+
+
+
+
+
  bot.command("start", async (ctx) => {
      await ctx.reply("Выберите действие", {reply_markup: main});
  });
 
- bot.on("message:sticker", async (ctx) => {
-  await ctx.reply("шо быкуешь нипон")
- })
+ bot.catch((err) => {
+  console.error("Ошибка:", err);
+});
 
- 
-// bot.command("input", async (ctx) => {   //Тестирование диалога с пользователем(файл modules/keyboard/conversations)
-//    await ctx.conversation.enter("hello");
-// });
+
 
 console.log("Бот запущен");
 
