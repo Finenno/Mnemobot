@@ -1,6 +1,13 @@
-const { getQuiz, createQuizWithTitle, setQuizDescription } = require('../db/quiz');
+const { getQuiz, createQuizWithTitle, setQuizDescription, updateQuizTitle } = require('../db/quiz');
 const { createdQuiz } = require("./menus");
 
+async function sendQuizMessage(ctx, quizId, quizData){
+  await ctx.reply(`
+ID вашего квиза: ${quizId}
+Название квиза: ${quizData.title}
+Описание квиза: ${quizData.description ? quizData.description : ' - '}
+  `, { reply_markup: createdQuiz });
+};
 
 async function createNewQuiz(conversation, ctx) {
   let msg = await ctx.reply('Введите название квиза\n(используйте /quit чтобы выйти)');
@@ -11,13 +18,7 @@ async function createNewQuiz(conversation, ctx) {
   const quizId = await conversation.external(() => createQuizWithTitle(ctx.from.id, message.text)); 
   let quizData = await conversation.external(() => getQuiz(quizId));
   await conversation.external((ctx) => ctx.session.currentQuizId = quizId);
-  await ctx.reply (`
-ID вашего квиза: ${quizId}
-Название квиза: ${quizData.title}
-Описание квиза: ${quizData.description ? quizData.description : ' - '}
-    `, {
-    reply_markup: createdQuiz,
-      });
+  await sendQuizMessage(ctx, quizId, quizData);
   await conversation.halt()
 };
 
@@ -29,21 +30,21 @@ async function setQuizDesc(conversation, ctx) {
   try {
     await conversation.external(() => setQuizDescription(quizId, message.text));
     const quizData = await conversation.external(() => getQuiz(quizId));
-    await ctx.reply (`
-ID вашего квиза: ${quizId}
-Название квиза: ${quizData.title}
-Описание квиза: ${quizData.description ? quizData.description : ' - '}
-    `, {
-    reply_markup: createdQuiz,
-      });
-    await conversation.halt()
+    await sendQuizMessage(ctx, quizId, quizData);
   } catch (err){
     await ctx.reply("Ошибка!", err);
-    await conversation.halt();
-  } finally {
-    await conversation.halt();
-  }
+  };
+  await conversation.halt();
 };
 
+async function setQuizTitle(conversation, ctx) {
+  const quizId = await conversation.external((ctx) => {return ctx.session.currentQuizId});
+  await ctx.reply("Введите новое название квиза: ")
+  const { message } = await conversation.waitFor('message:text');
+  await conversation.external(() => updateQuizTitle(quizId, message.text));
+  const quizData = await conversation.external(() => getQuiz(quizId));
+  await sendQuizMessage(ctx, quizId, quizData);
+  await conversation.halt();
+};
 
-module.exports = { createNewQuiz, setQuizDesc };
+module.exports = { createNewQuiz, setQuizDesc, setQuizTitle };

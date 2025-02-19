@@ -1,5 +1,6 @@
 const { conversations } = require("@grammyjs/conversations");
 const { Menu } = require("@grammyjs/menu");
+const { InlineKeyboard } = require("grammy");
 
 const main = new Menu("main-menu")
   .submenu("Мои квизы", "my-quiz-menu")
@@ -22,12 +23,13 @@ const myQuizzes = new Menu("my-quiz-menu")
   .back("Назад");
 
 
-const createdQuiz = new Menu("created-quiz-menu")
-  .text("Установить описание", async (ctx) => { await ctx.conversation.enter("setQuizDesc"); })
-  .text("Поменять название")
+const createdQuiz = new InlineKeyboard()
+  .text("Установить описание", "set_desc")
+  .text("Поменять название", "change_name")
   .row()
-  .text("Добавить вопрос")
-  .text("Сохранить и выйти");
+  .text("Добавить вопрос", "add_question")
+  .text("Сохранить и выйти", "save_exit");
+
 
 main.register(help);
 main.register(myQuizzes);

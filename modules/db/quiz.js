@@ -102,6 +102,19 @@ async function setQuizDescription(quizId, quizDesc){
     };
 };
 
+
+async function updateQuizTitle(quizId, quizName){
+    try {
+        await pool.query(
+            'UPDATE quizzes SET title = $1 WHERE quiz_id = $2',
+            [quizName, quizId]
+        );
+    } catch (err) {
+        return err
+    };
+};
+
+
 async function addQuizQuestion(quizId, questionName, correctAnswer, incorrectAnswers){
     try {
         await pool.query(
@@ -122,4 +135,5 @@ module.exports = {
   setQuizDescription,
   addQuizQuestion,
   getQuiz,
+  updateQuizTitle
 };
