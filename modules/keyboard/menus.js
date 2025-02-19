@@ -1,19 +1,13 @@
 const { conversations } = require("@grammyjs/conversations");
 const { Menu } = require("@grammyjs/menu");
+const { InlineKeyboard } = require("grammy");
 
 const main = new Menu("main-menu")
-  .submenu("Мои квизы", "quiz-menu")
+  .submenu("Мои квизы", "my-quiz-menu")
   .text("Профиль", (ctx) => ctx.answerCallbackQuery({ text: "А здесь будет вся твоя ЛИЧНАЯ статистика..." }))
   .row()
   .text("Топ квизов", (ctx) => ctx.answerCallbackQuery({ text: "Здесь будет топ всех пользовательских модулей..." }))
   .submenu("FAQ", "help-menu");
-
-const quiz = new Menu("quiz-menu")
-  .text("Создать", async (ctx) => { await ctx.conversation.enter("hello"); } )
-  .text("Удалить")
-  .row()
-  .text("Редактировать")
-  .back("Назад");
 
 const help = new Menu("help-menu")
   .text("Часто задаваемые вопросы")
@@ -21,21 +15,28 @@ const help = new Menu("help-menu")
   .back("Назад");
 
 
-// const newquiz = new Menu("newQuiz-menu")
-//   .text("Ввести название", async (ctx) => {
-//     await ctx.conversation.enter("hello");
-//   })
-//   .back("Назад", async (ctx) => {
-//     await ctx.editMessageText("Выберите действие");
-//   });
+const myQuizzes = new Menu("my-quiz-menu")
+  .text("Создать", async (ctx) => { await ctx.conversation.enter("createNewQuiz"); } )
+  .text("Удалить")
+  .row()
+  .text("Редактировать")
+  .back("Назад");
 
-// Регистрируем все меню
-main.register(quiz); 
+
+const createdQuiz = new InlineKeyboard()
+  .text("Установить описание", "set_desc")
+  .text("Поменять название", "change_name")
+  .row()
+  .text("Добавить вопрос", "add_question")
+  .text("Сохранить и выйти", "save_exit");
+
+
 main.register(help);
-//quiz.register(newquiz);
+main.register(myQuizzes);
+
 module.exports = {
   main,
-  quiz,
   help,
-  // newquiz,
+  myQuizzes,
+  createdQuiz
 };
