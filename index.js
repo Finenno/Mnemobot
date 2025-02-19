@@ -3,46 +3,41 @@ const { Bot, session } = require("grammy");
 const { main, createdQuiz } = require("././modules/keyboard/menus");
 const { conversations, createConversation } = require("@grammyjs/conversations");
 const { hydrate } = require("@grammyjs/hydrate");
-const { createNewQuiz, setQuizDesc, setQuizTitle } = require("././modules/keyboard/conversations");
+const { createNewQuiz, setQuizDesc, setQuizTitle, addQuestion } = require("././modules/keyboard/conversations");
 const bot = new Bot(process.env.BOT_API_KEY); 
 
-/*
-function crateInitialSessionData() {
-  return {
-    currentQuizId: undefined,
-  }
-}
-*/
 
+// Создание структуры сессии
+bot.use(session({ initial: () => ({ currentQuizId: null, mainMessage: null }) }));
 
-bot.use(session({ initial: () => ({ currentQuizId: undefined }) }));
+// Гидратация
+bot.use(hydrate());
 
-
+// Добавление плагинов/меню в чаты ( conversations )
 bot.use(conversations({
   plugins: [hydrate()]
 }));
 
 
-
+// Регистрация чатов ( conversations )
 bot.use(createConversation(createNewQuiz, "createNewQuiz"));
 bot.use(createConversation(setQuizDesc, "setQuizDesc"));
 bot.use(createConversation(setQuizTitle, "setQuizTitle"));
+bot.use(createConversation(addQuestion, "addQuestion"));
 
-
+// Меню
 bot.use(main);
 
-
-
-
-
+// Команды
  bot.command("start", async (ctx) => {
-     await ctx.reply("Выберите действие", {reply_markup: main});
+    let mainMessage = await ctx.reply("Выберите действие", {reply_markup: main});
+    ctx.session.mainMessage = mainMessage; // Сохранение гланого сообщения-меню в ctx.session
  });
 
-// Добавьте обработчик для callback
-bot.callbackQuery("set_desc", async (ctx) => {
+// Callback handler-ы
+bot.callbackQuery("set_desc", async (ctx) => { // Вызов conversation-а для установки описания квиза
   try {
-    await ctx.answerCallbackQuery(); // Обязательно отвечаем на callback
+    await ctx.answerCallbackQuery();
     await ctx.conversation.enter("setQuizDesc");
   } catch (error) {
     console.error("Error when setting quiz description:", error);
@@ -50,7 +45,8 @@ bot.callbackQuery("set_desc", async (ctx) => {
   }
 });
 
-bot.callbackQuery("change_name", async (ctx) => {
+
+bot.callbackQuery("change_name", async (ctx) => { // Вызов conversation-а для изменения названия квиза
   try {
     await ctx.answerCallbackQuery();
     await ctx.conversation.enter("setQuizTitle");
@@ -60,18 +56,24 @@ bot.callbackQuery("change_name", async (ctx) => {
   }
 });
 
-bot.callbackQuery("save_exit", async (ctx) => {
+
+bot.callbackQuery("save_exit", async (ctx) => { // Выход из conversation-а и возвращение к главному меню
   await ctx.answerCallbackQuery();
   await ctx.conversation.exit();
-  ctx.session.currentQuizId = undefined;
+  ctx.session.currentQuizId = null;
   await ctx.reply("Выберите действие", {reply_markup: main});
+});
+
+
+bot.callbackQuery("add_question", async (ctx) => { // Вызов conversation-а для добавления вопроса
+  await ctx.answerCallbackQuery();
+  await ctx.conversation.enter("addQuestion");
 });
 
 
  bot.catch((err) => {
   console.error("Ошибка:", err);
 });
-
 
 
 console.log("Бот запущен");
