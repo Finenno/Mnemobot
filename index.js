@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const { Bot } = require("grammy");
 const { main, quiz } = require("././modules/keyboard/menus");
 const { Menu } = require("@grammyjs/menu");
@@ -23,7 +24,6 @@ bot.use(quiz);
   await ctx.reply("шо быкуешь нипон")
  })
 
- 
 // bot.command("input", async (ctx) => {   //Тестирование диалога с пользователем(файл modules/keyboard/conversations)
 //    await ctx.conversation.enter("hello");
 // });
@@ -31,5 +31,3 @@ bot.use(quiz);
 console.log("Бот запущен");
 
 bot.start();
-
-
