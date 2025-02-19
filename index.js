@@ -3,7 +3,7 @@ const { Bot, session } = require("grammy");
 const { main, createdQuiz } = require("././modules/keyboard/menus");
 const { conversations, createConversation } = require("@grammyjs/conversations");
 const { hydrate } = require("@grammyjs/hydrate");
-const { createNewQuiz, setQuizDesc, setQuizTitle } = require("././modules/keyboard/conversations");
+const { createNewQuiz, setQuizDesc, setQuizTitle, addQuestion } = require("././modules/keyboard/conversations");
 const bot = new Bot(process.env.BOT_API_KEY); 
 
 /*
@@ -27,6 +27,7 @@ bot.use(conversations({
 bot.use(createConversation(createNewQuiz, "createNewQuiz"));
 bot.use(createConversation(setQuizDesc, "setQuizDesc"));
 bot.use(createConversation(setQuizTitle, "setQuizTitle"));
+bot.use(createConversation(addQuestion, "addQuestion"));
 
 
 bot.use(main);
@@ -72,7 +73,12 @@ bot.callbackQuery("save_exit", async (ctx) => {
   console.error("Ошибка:", err);
 });
 
+bot.callbackQuery("add_question", async (ctx) => {
+  await ctx.answerCallbackQuery();
 
+  await ctx.conversation.enter("addQuestion");
+  await ctx.conversation.exit();
+})
 
 console.log("Бот запущен");
 

@@ -47,4 +47,11 @@ async function setQuizTitle(conversation, ctx) {
   await conversation.halt();
 };
 
-module.exports = { createNewQuiz, setQuizDesc, setQuizTitle };
+async function addQuestion(conversation, ctx){
+  await ctx.reply("Введите ваш вопрос");
+  const { message } = await conversation.waitFor("message:text");
+  await ctx.reply(`Ваш вопрос: ${message.text}`);
+  await conversation.halt();
+};
+
+module.exports = { createNewQuiz, setQuizDesc, setQuizTitle, addQuestion };
